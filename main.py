@@ -62,9 +62,9 @@ def doQuerySentarEnMesa(id_persona, id_mesa):
     conn.commit()
     print('SALE -> persona con cédula ', id_persona, ' de la tienda con id ', id_tienda)
 
-def doQueryMesasDesocupadas():
+def doQueryMesasOcupadas():
     cur = conn.cursor()
-    sql = "SELECT id_mesa FROM estadistica_mesa WHERE rip = true;"
+    sql = "SELECT id_mesa FROM estadistica_mesa WHERE rip = false ORDER BY id_mesa;"
     cur.execute(sql)
     records = cur.fetchall()
     return records
@@ -109,20 +109,47 @@ def sacarPersonEnTienda():
 def sentarPersonaEnMesa():
     personas_en_pasillo_query = doQueryCantidadEnPasillo()
     personas_en_pasillo = []
+
     # Obtenemos las cédulas de las personas que están en los pasillos
     for row in personas_en_pasillo_query:
         personas_en_pasillo.append(row[4])
-    cantidad = len(personas_en_pasillo)
-    random = int(np.random.uniform(0, cantidad)) # Lugar en el array de la persona que sentaremos en una mesa
 
-    id_mesas_desocupadas_query = doQueryMesasDesocupadas()
-    print(id_mesas_desocupadas_query)
+    cantidad = len(personas_en_pasillo)
+    randomPersona = int(np.random.uniform(0, cantidad)) # Lugar en el array de la persona que sentaremos en una mesa
+
+    cont = 0
+    for row in personas_en_pasillo:
+        if (cont == randomPersona):
+            id_persona_para_sentar = row
+        cont+=1
+
+    id_mesas_ocupadas_query = doQueryMesasOcupadas()
+    id_mesas_ocupadas = []
+    id_mesas_desocupadas = []
+    for id in id_mesas_ocupadas_query:
+        id_mesas_ocupadas.append(id[0])
+
+    for i in range(0, 9):
+        if (not find(id_mesas_ocupadas, i + 1)):
+            id_mesas_desocupadas.append(i + 1)  
+            
+    random.shuffle(id_mesas_desocupadas)
+    id_mesa_para_sentar = id_mesas_desocupadas[0]
+    print(id_persona_para_sentar, id_mesa_para_sentar)
+
+    # doQuerySentarEnMesa(id_persona_para_meter, id_mesa_para_sentar)
 
 
 
     # # Si hay gente en los pasillos, meter a una persona en la tienda
     # if (len(personas_en_pasillo) > 0):
     #     doQueryMeterEnTienda(id_persona_para_meter, id_tienda_para_meter)
+
+def find(array, value):
+    for val in array:
+        if (val == value):
+            return True
+    return False
 
 def main():
     # meterPersonaEnTienda()

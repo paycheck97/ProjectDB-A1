@@ -20,8 +20,8 @@ def doQuery(a):
     id_persona = a['id_persona']
 
     cur = conn.cursor()
-    sql = "INSERT INTO estadistica_camara (id_camara, hora_entrada, hora_salida, id_persona, dentro_tienda, rip) VALUES (%s, %s, %s, %s, %s, %s);"
-    cur.execute(sql, (id_camara, hora_entrada, hora_salida, id_persona, dentro_tienda, False))
+    sql = "INSERT INTO estadistica_camara (id_camara, hora_entrada, hora_salida, id_persona, dentro_tienda, sentado_mesa, rip) VALUES (%s, %s, %s, %s, %s, %s);"
+    cur.execute(sql, (id_camara, hora_entrada, hora_salida, id_persona, dentro_tienda, False, False))
     conn.commit()
 
 
