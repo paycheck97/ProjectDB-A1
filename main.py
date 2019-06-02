@@ -11,6 +11,14 @@ import datetime
 conn = psycopg2.connect(host='bydl8yhl1xvycflftlju-postgresql.services.clever-cloud.com',
                         user='ujegvu5yu2q28i5dthj9', password='86WWh0iQz4n8dfN82WGW', dbname='bydl8yhl1xvycflftlju')
 
+def deQueryEntrarTienda(id_persona, id_tienda):
+    cur = conn.cursor()
+    sql = "UPDATE estadistica_camara SET dentro_tienda = true WHERE id_persona = %s;"
+    cur.execute(sql, (id_persona))
+    sql = "INSERT INTO estadistica_tienda (id_tienda, id_persona, rip) VALUES (%s, %s, %s)"
+    cur.execute(sql, (id_tienda, id_persona, True))
+    conn.commit()
+
 def doQueryTienda():
     cur = conn.cursor()
     sql = "Select * FROM estadistica_camara WHERE dentro_tienda = false AND rip = false GROUP BY id;"
@@ -35,7 +43,7 @@ def main():
         cont+=1
 
     print(id_persona_para_meter)
-    
+    doQueryEntrarTienda(id_persona_para_meter, id_tienda_para_meter)
 
     # print(personas_en_pasillo)
     # print(cantidad)
@@ -44,7 +52,3 @@ def main():
 if __name__ == '__main__':
     main()
 sys.exit(0)
-
-
-
-
