@@ -16,14 +16,17 @@ def doQuery(a):
     id_camara = a['id_camara']
     hora_entrada = a['hora_entrada']
     hora_salida = a['hora_salida']
-    dentro_tienda = a['dentro_tienda']
     id_persona = a['id_persona']
+    macaddress = a['macaddress']
 
     cur = conn.cursor()
-    sql = "INSERT INTO estadistica_camara (id_camara, hora_entrada, hora_salida, id_persona, dentro_tienda, sentado_mesa, rip) VALUES (%s, %s, %s, %s, %s, %s);"
-    cur.execute(sql, (id_camara, hora_entrada, hora_salida, id_persona, dentro_tienda, False, False))
+    sql = "INSERT INTO estadistica_camara (id_camara, hora_entrada, hora_salida, id_persona, dentro_tienda, sentado_mesa, rip) VALUES (%s, %s, %s, %s, %s, %s, %s);"
+    cur.execute(sql, (id_camara, hora_entrada, hora_salida, id_persona, False, False, False))
     conn.commit()
-
+    if (macaddress != None):
+        print('ENTRA -> persona con cédula ', id_persona, ' al CENTRO COMERCIAL y con el teléfono ', macaddress)
+    else:
+        print('ENTRA -> persona con cédula ', id_persona, ' al CENTRO COMERCIAL')
 
 def on_connect(client, userdata, flags, rc):
     print("Conectado! (%s)" % client._client_id)
@@ -31,10 +34,6 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, message):
-    print('------------------------------')
-    print('topic: %s' % message.topic)
-    print('payload: %s' % message.payload)
-    print('------------------------------')
     doQuery(message.payload)
 
     

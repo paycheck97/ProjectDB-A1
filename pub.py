@@ -9,6 +9,7 @@ import numpy as np
 import datetime
 import math
 import psycopg2
+from randmac import RandMac
 
 
 def on_connect(client, userdata, flags, rc):
@@ -26,11 +27,18 @@ def main():
     
     while(True):
         random = int(np.random.uniform(0, 2))
-        print(random)
         if (random == 1):
             sexo = 'masculino'
         else:
             sexo = 'femenino'
+
+        random = int(np.random.uniform(0, 2))
+        tiene_telefono = False
+        macaddress = None
+        if (random == 1):
+            tiene_telefono = True
+            macaddress = str(RandMac("00:00:00:00:00:00", False))
+            macaddress = macaddress.replace("'", "")
             
         edad = int(np.random.uniform(10, 60))
         hora_entrada = time.strftime("%d/%m/%y %H:%M:%S")
@@ -41,16 +49,23 @@ def main():
             "id_camara": id_camara,
             "hora_entrada": hora_entrada,
             "hora_salida": None,
-            "dentro_tienda": False,
-            "id_persona": id_persona
+            "id_persona": id_persona,
+            "macaddress": macaddress
         }
         
-        query = "INSERT INTO persona (id, sexo, edad) VALUES (%s, %s, %s)";
+        # Crear Persona en la BDD
+        query = "INSERT INTO persona (id, sexo, edad) VALUES (%s, %s, %s);"
         cursor.execute(query, (id_persona, sexo, edad))
         conn.commit()
+
+        # Crear Registro de teléfono en caso de que tenga teléfono
+        if (tiene_telefono == True):
+            query = "INSERT INTO telefono (macaddress, id_persona) VALUES (%s, %s);"
+            cursor.execute(query, (macaddress, id_persona))
+            conn.commit()
         
         client.publish('sambil/accesos', json.dumps(payload), qos=0)
-          
+
         time.sleep(np.random.uniform(2, 4))
 
 
