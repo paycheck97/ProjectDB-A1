@@ -102,6 +102,14 @@ def doQueryRealizarVenta(id_tienda, id_persona, monto):
     conn.commit()
     print('COMPRA -> persona con cédula ', id_persona, ' a la tienda con id ', id_tienda, ' por un monto ', monto)
 
+def doQuerySacarDelCC(id_persona):
+    cur = conn.cursor()
+    sql = "UPDATE estadistica_camara SET rip = true WHERE id_persona = '%s';"
+    cur.execute(sql, [id_persona])
+    conn.commit()
+    print('SALE -> persona con cédula ', id_persona, ' del centro comercial')
+
+
 # -------------------------------------------------------------
 #  ------------------------ FUNCIONES -------------------------
 # -------------------------------------------------------------
@@ -130,7 +138,7 @@ def sacarPersonEnTienda():
     random.shuffle(tienda_a_sacar_query)
     tienda_a_sacar = tienda_a_sacar_query[0]
     id_tienda_a_sacar = tienda_a_sacar[0]
-    cant_tienda_a_sacar = tienda_a_sacar[1]
+    #cant_tienda_a_sacar = tienda_a_sacar[1]
 
     personas_en_tienda = doQueryPersonasEnTienda(id_tienda_a_sacar)
     random.shuffle(personas_en_tienda)
@@ -206,6 +214,13 @@ def realizarVenta():
 
     doQueryRealizarVenta(id_tienda_a_vender,id_persona_a_comprar, monto)
 
+def sacarPersonaEnCC():
+    personas_en_pasillo_query = doQueryPersonasEnPasillo()
+    random.shuffle(personas_en_pasillo_query)
+    if (len(personas_en_pasillo_query) > 0):
+        persona_a_sacar_cc = personas_en_pasillo_query[0][4]
+        doQuerySacarDelCC(persona_a_sacar_cc)
+
 def find(array, value):
     for val in array:
         if (val == value):
@@ -228,7 +243,9 @@ def main():
 
     #pararPersonaDeMesa()
 
-    realizarVenta()
+    #realizarVenta()
+
+    sacarPersonaEnCC()
 
 if __name__ == '__main__':
     main()
