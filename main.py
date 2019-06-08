@@ -104,7 +104,7 @@ def doQueryRealizarVenta(id_tienda, id_persona, monto):
 
 def doQuerySacarDelCC(id_persona):
     cur = conn.cursor()
-    sql = "UPDATE estadistica_camara SET rip = true WHERE id_persona = '%s';"
+    sql = "UPDATE estadistica_camara SET rip = true WHERE id_persona = '%s' and rip = false;"
     cur.execute(sql, [id_persona])
     conn.commit()
     print('SALE -> persona con cédula ', id_persona, ' del centro comercial')
@@ -206,7 +206,7 @@ def realizarVenta():
     id_persona_a_comprar = personas_en_tienda[0][0]
 
     verificarTelefono(id_persona_a_comprar)
-    if(not verificarTelefono): #si no tiene telefono no adjudica la venta a un id
+    if(verificarTelefono != True): #si no tiene telefono no adjudica la venta a un id
         id_persona_a_comprar = None
 
     monto = np.random.uniform(100, 50000000)
@@ -243,9 +243,9 @@ def main():
 
     #pararPersonaDeMesa()
 
-    #realizarVenta()
+    realizarVenta()
 
-    sacarPersonaEnCC()
+    #sacarPersonaEnCC()
 
 if __name__ == '__main__':
     main()
