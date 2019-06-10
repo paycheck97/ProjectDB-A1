@@ -235,17 +235,27 @@ def verificarTelefono(id_persona):
     return False
 
 def main():
-    # meterPersonaEnTienda()
 
-    # sacarPersonEnTienda()
-
-    #sentarPersonaEnMesa()
-
-    #pararPersonaDeMesa()
-
-    realizarVenta()
-
-    #sacarPersonaEnCC()
+    while(True):
+        random = int(np.random.uniform(0, 2))
+        if (random == 1):
+            meterPersonaEnTienda()
+        random = int(np.random.uniform(0, 2))
+        if (random == 1):
+            sacarPersonEnTienda()
+        random = int(np.random.uniform(0, 2))
+        if (random == 1):
+            sentarPersonaEnMesa()
+        random = int(np.random.uniform(0, 2))
+        if (random == 1):
+            pararPersonaDeMesa()
+        random = int(np.random.uniform(0, 2))
+        if (random == 1):
+            realizarVenta()
+        random = int(np.random.uniform(0, 4))
+        if (random == 1):
+            sacarPersonaEnCC()
+        time.sleep(3)
 
 if __name__ == '__main__':
     main()
